@@ -24,7 +24,7 @@ class AnimatedSplash extends StatelessWidget {
           ],
         ),
         nextScreen: SplachScreen(),
-      backgroundColor: Color.fromRGBO(34, 34, 34, 1),
+      backgroundColor: Colors.white,
       splashIconSize: getScreenHeight(context),
       splashTransition: SplashTransition.fadeTransition,
       animationDuration: const Duration(milliseconds: 900),

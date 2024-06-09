@@ -34,7 +34,6 @@ class mySTT {
     DataTest test = DataTest();
     test.value = lastWords;
     myEvent.broadcast(test);
-    // print("onSpeech" + lastWords);
   }
 }
 

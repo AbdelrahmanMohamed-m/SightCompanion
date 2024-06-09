@@ -9,7 +9,6 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../ui/camera_view.dart';
-import '../../utils/tts_utils.dart';
 
 /// [HomeView] stacks [CameraView] and [BoxWidget]s with bottom sheet for stats
 class CurrencyCounter extends StatefulWidget {
@@ -95,28 +94,46 @@ class _CurrencyCounterState extends State<CurrencyCounter> with WidgetsBindingOb
     );
   }
 
-  void handleResults(List<Recognition>? results) {
-    results?.forEach((element) async {
-      if (element.label == "0 Pounds") {
-        await Future.delayed(Duration(seconds: 1));
-        setState(() {
-          this.results = null;
-        });
+  // Create a Map to store the last time each label was spoken
+Map<String, DateTime> lastSpokenTimes = {};
+
+void handleResults(List<Recognition>? results) {
+  results?.forEach((element) async {
+    if (element.label == "0 Pounds") {
+      await Future.delayed(Duration(seconds: 1));
+      setState(() {
+        this.results = null;
+      });
+      if (shouldSpeakLabel("No Notes Found")) {
         ENG_LANG
             ? ttsOffline("No Notes Found", EN)
             : ttsOffline("لم يتم العثور على أوراق نقدية", AR);
       }
-    });
+    }
+  });
 
-    int totalNotes = 0;
-    results?.forEach((element) {
-      totalNotes +=
-          int.parse(element.label.substring(0, element.label.length - 3));
-    });
+  int totalNotes = 0;
+  results?.forEach((element) {
+    totalNotes +=
+        int.parse(element.label.substring(0, element.label.length - 3));
+  });
+  String totalNotesLabel = totalNotes.toString() + (ENG_LANG ? " Pounds" : " جنيه");
+  if (shouldSpeakLabel(totalNotesLabel)) {
     ENG_LANG
-        ? ttsOffline(totalNotes.toString() + " Pounds", EN)
-        : ttsOffline(totalNotes.toString() + " جنيه", AR);
+        ? ttsOffline(totalNotesLabel, EN)
+        : ttsOffline(totalNotesLabel, AR);
   }
+}
+
+bool shouldSpeakLabel(String label) {
+  // If the label has not been spoken before, or if it was spoken more than a second ago, speak it
+  if (!lastSpokenTimes.containsKey(label) || DateTime.now().difference(lastSpokenTimes[label]!).inSeconds > 1) {
+    lastSpokenTimes[label] = DateTime.now();
+    return true;
+  }
+  // Otherwise, don't speak it
+  return false;
+}
 
   void resultsCallback(List<Recognition>? results) {
     if (mounted) {
