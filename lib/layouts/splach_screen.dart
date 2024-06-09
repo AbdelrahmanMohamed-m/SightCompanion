@@ -20,7 +20,7 @@ class _SplachScreenState extends State<SplachScreen> {
 
   _speak() async {
 
-    ttsOffline("Welcome in blind assistant app", "en-US"); //what is this function ?
+    ttsOffline("Welcome in blind assistant app", "en-US");
     await Future.delayed(Duration(seconds: 1));
     ttsOffline("This app is voice controlled",  "en-US");
     await Future.delayed(Duration(seconds: 1));
@@ -31,18 +31,7 @@ class _SplachScreenState extends State<SplachScreen> {
     ttsOffline(
         "Please choose app language, say one for english or two for arabic",
         "en-US");
-    // await sttFlutter("en-US");
-    // if (lastWords.toLowerCase() == "two") {
-    //   appLang = AR;
-    //   navigateAndFinish(context, HomeScreen());
-    // } else if (lastWords.toLowerCase() == "one") {
-    //   appLang = ENG;
-    //   navigateAndFinish(context, HomeScreen());
-    // }
-   /* if (lastWords.isEmpty) {
-      await Future.delayed(Duration(milliseconds: 1000));
-      _takeFavLangFromUser();
-    }*/
+
   }
 
   @override
@@ -52,7 +41,7 @@ class _SplachScreenState extends State<SplachScreen> {
         backgroundColor: WHITE_COLOR,
       ),
       body: Center(
-        child: Image.asset(GLASSES_IMG),
+        child: Image.asset(LOGO_IMG)
       ),
     );
   }

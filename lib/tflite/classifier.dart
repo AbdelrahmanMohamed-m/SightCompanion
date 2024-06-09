@@ -49,11 +49,11 @@ class Classifier {
     Interpreter? interpreter,
     List<String>? labels,
   }) {
-
     // _outputShapesIndexes.clear();
     if (moduleLabel == OBJ_MOD_LABEL) {
       MODEL_FILE_NAME = 'models/objectDetect_lite4.tflite';
-      LABEL_FILE_NAME = ENG_LANG?"labels/labelmap.txt":"labels/labelmap_ar.txt";
+      LABEL_FILE_NAME =
+          ENG_LANG ? "labels/labelmap.txt" : "labels/labelmap_ar.txt";
       INPUT_SIZE = 640;
       _outputShapesIndexes.add(0);
       _outputShapesIndexes.add(1);

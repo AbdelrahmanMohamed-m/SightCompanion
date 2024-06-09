@@ -20,7 +20,9 @@ class ObjectDetection extends StatefulWidget {
   @override
   _ObjectDetectionState createState() => _ObjectDetectionState();
 }
-class _ObjectDetectionState extends State<ObjectDetection> with WidgetsBindingObserver {
+
+class _ObjectDetectionState extends State<ObjectDetection>
+    with WidgetsBindingObserver {
   List<Recognition>? detectedObjects;
   Stats? detectionStats;
   int detectionPauseStatus = 0;
@@ -39,15 +41,13 @@ class _ObjectDetectionState extends State<ObjectDetection> with WidgetsBindingOb
   }
 
   void initializeTextToSpeech() {
-    ENG_LANG
-        ? ttsOffline(OBJ_MOD_LABEL, EN)
-        : ttsOffline(OBJ_MOD_LABEL_AR, AR);
+    ENG_LANG ? ttsOffline(OBJ_MOD_LABEL, EN) : ttsOffline(OBJ_MOD_LABEL_AR, AR);
     HomeScreen.cubit.changeSelectedIndex(0);
   }
 
   void initializeCameraView() {
-    ObjectDetection.cameraView =
-        CameraView(detectionResultsCallback, statsCallback, OBJ_MOD_LABEL, detectionPauseStatus);
+    ObjectDetection.cameraView = CameraView(detectionResultsCallback,
+        statsCallback, OBJ_MOD_LABEL, detectionPauseStatus);
   }
 
   @override
@@ -77,17 +77,17 @@ class _ObjectDetectionState extends State<ObjectDetection> with WidgetsBindingOb
     }
     Vibration.vibrate(duration: 200);
     Event<DataTest> speechEvent =
-    ENG_LANG ? await mySTT.listen(EN) : await mySTT.listen(AR);
+        ENG_LANG ? await mySTT.listen(EN) : await mySTT.listen(AR);
     speechEvent.subscribe((args) => {
-      if (args != null)
-        {
-          detectedObjectName = args.value,
-          detectionPauseStatus = 0,
-          ENG_LANG
-              ? ttsOffline("Searching for ${detectedObjectName}", EN)
-              : ttsOffline("تبحث عن " + detectedObjectName!, AR),
-        }
-    });
+          if (args != null)
+            {
+              detectedObjectName = args.value,
+              detectionPauseStatus = 0,
+              ENG_LANG
+                  ? ttsOffline("Searching for ${detectedObjectName}", EN)
+                  : ttsOffline("تبحث عن " + detectedObjectName!, AR),
+            }
+        });
 
     // Stop the search and return to normal after 10 seconds
     Future.delayed(Duration(seconds: 10), () {
@@ -131,20 +131,28 @@ class _ObjectDetectionState extends State<ObjectDetection> with WidgetsBindingOb
     return Stack(
       children: detectedObjects
           .map((e) => BoxWidget(
-        result: e,
-      ))
+                result: e,
+              ))
           .toList(),
     );
   }
 
-  void handleDetectionResults(List<Recognition>? detectedObjects) {
-    String resultText = "";
-    detectedObjects?.forEach((element) {
+ Map<String, DateTime> spokenLabels = {};
+
+void handleDetectionResults(List<Recognition>? detectedObjects) {
+  String resultText = "";
+  DateTime now = DateTime.now();
+  detectedObjects?.forEach((element) {
+    if (!spokenLabels.containsKey(element.label) ||
+        now.difference(spokenLabels[element.label]!).inSeconds >= 1) {
+      spokenLabels[element.label] = now;
       resultText += (element.label + ", ");
-    });
-    // Start a new TTS operation for the detected objects
+    }
+  });
+  if (resultText.isNotEmpty) {
     ENG_LANG ? ttsOffline(resultText, EN) : ttsOffline(resultText, AR);
   }
+}
 
   void detectionResultsCallback(List<Recognition>? detectedObjects) {
     if (mounted) {
@@ -154,9 +162,12 @@ class _ObjectDetectionState extends State<ObjectDetection> with WidgetsBindingOb
     }
 
     double screenArea = 1280 * 720;
-    if (detectedObjects != null && detectedObjectName != null && detectedObjectName!.isNotEmpty) {
+    if (detectedObjects != null &&
+        detectedObjectName != null &&
+        detectedObjectName!.isNotEmpty) {
       setState(() {
-        detectedObjects.retainWhere((element) => element.label == detectedObjectName!.toLowerCase());
+        detectedObjects.retainWhere(
+            (element) => element.label == detectedObjectName!.toLowerCase());
       });
       detectedObjects.forEach((element) {
         detectedObjectArea = element.location!.width * element.location!.height;

@@ -1,5 +1,5 @@
 //app name
-const APP_NAME = 'Life Window';
+const APP_NAME = 'Sight Companion';
 
 //modules labels
 const OBJ_MOD_LABEL = 'Object Finder';
@@ -44,7 +44,7 @@ const ASSISTANT_IMG = 'assets/images/assistant.png';
 const LOGIN_IMG = 'assets/images/login_img.png';
 const EG_FLAG = 'assets/images/eg.png';
 const GB_FLAG = 'assets/images/gb.png';
-const LOGO_IMG = 'assets/images/vision.png';
+const LOGO_IMG = 'assets/images/eyelogo.png';
 
 //text_fields labels
 const EMAIL_LABEL = 'Email';

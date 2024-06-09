@@ -50,9 +50,7 @@ class HomeScreenState extends State<HomeScreen>
         CurrencyCounter.cameraView?.initializeCamera();
         showToast("index 1");
       }
-      /*else if (_tabController.index == 2){
-         await cameraController!.stopImageStream();
-    }*/
+
     });
   }
 
